@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>探索世界之美 · 白族彩绘</title>
+    <style>
+        /* ---------- 全局重置 & 基础 ---------- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #ffffff;
+            color: #1a1a2e;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ---------- 主容器 ---------- */
+        .app {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* ---------- 导航栏 (空白，顶部) ---------- */
+        .navbar {
+            flex: 0 0 64px;
+            /* 固定高度 */
+            width: 100%;
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            /* 极淡分割线，几乎不可见，但能提示导航区域 */
+            display: flex;
+            align-items: center;
+            padding: 0 4vw;
+            position: relative;
+            z-index: 10;
+            /* 保证在文字区域之上 */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            /* 极淡阴影，增加层次 */
+        }
+
+        /* 导航栏内暂时留空，仅占位 */
+        .navbar .placeholder {
+            font-size: 0.85rem;
+            color: #cccccc;
+            letter-spacing: 0.06em;
+            font-weight: 400;
+            user-select: none;
+            opacity: 0.4;
+            /* 极淡的占位文字，几乎看不见，仅示意 */
+        }
+
+        /* ---------- 文字区域 (中间偏上) ———— 增加左右留白 ---------- */
+        .text-section {
+            flex: 0 0 24%;
+            /* 因为上面多了导航栏，比例略微调小 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 6vw;
+            text-align: center;
+            background: #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .text-section h1 {
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #1a1a2e;
+            margin-bottom: 0.3em;
+            background: linear-gradient(135deg, #1a1a2e 0%, #3d3d6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-section .subtitle {
+            font-size: clamp(0.9rem, 1.3vw, 1.2rem);
+            font-weight: 400;
+            color: #555577;
+            max-width: 680px;
+            line-height: 1.8;
+            letter-spacing: 0.02em;
+        }
+
+        .text-section .subtitle em {
+            font-style: italic;
+            color: #7c7ca8;
+        }
+
+        .text-section .divider {
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #c4c4e0, #8888b8);
+            border-radius: 2px;
+            margin-top: 1rem;
+        }
+
+        /* ---------- 图片区域 (网格) ———— 增加左右留白 ---------- */
+        .image-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #ffffff;
+            padding: 0 4vw 2vh 4vw;
+            min-height: 0;
+        }
+
+        .grid-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            max-height: 72vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #f8f8fc;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .grid-wrapper:hover {
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+        }
+
+        /* 网格容器 ———— 增加内边距，让图片与边框距离更大 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 14px;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: #ffffff;
+            flex: 1;
+        }
+
+        .grid-item {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #f0f0f5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+            z-index: 2;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.03);
+        }
+
+        .grid-item .item-label {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.03em;
+            font-weight: 400;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .grid-item:hover .item-label {
+            opacity: 1;
+        }
+
+        /* ---------- 分页控件 (右下角) ---------- */
+        .pagination {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 16px 6px 20px;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            z-index: 20;
+            user-select: none;
+        }
+
+        .pagination .page-info {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #2d2d4e;
+            letter-spacing: 0.02em;
+            margin-right: 4px;
+            min-width: 52px;
+            text-align: center;
+        }
+
+        .pagination button {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: #3d3d5e;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1a1a2e;
+            transform: scale(1.08);
+        }
+
+        .pagination button:active:not(:disabled) {
+            transform: scale(0.90);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination button svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2.4;
+        }
+
+        /* ---------- 模态框 (overlay) 增加四周留白 ---------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 40px;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 白块 */
+        .modal-card {
+            width: 92%;
+            max-width: 1680px;
+            max-height: 96vh;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 48px 120px rgba(0, 0, 0, 0.35), 0 16px 48px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            transform: scale(0.92) translateY(24px);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .modal-overlay.open .modal-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-image {
+            flex: 0 0 55%;
+            min-height: 400px;
+            background: #e8e8f0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .modal-card:hover .modal-image img {
+            transform: scale(1.02);
+        }
+
+        .modal-content {
+            flex: 1;
+            padding: 4rem 4rem 4rem 3.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+            min-width: 0;
+        }
+
+        .modal-content .modal-title {
+            font-size: clamp(2rem, 4.2vw, 3.6rem);
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+        }
+
+        .modal-content .modal-desc {
+            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            color: #4a4a6a;
+            line-height: 2;
+            letter-spacing: 0.01em;
+            max-width: 95%;
+        }
+
+        .modal-content .modal-meta {
+            margin-top: 2.4rem;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 1rem;
+            color: #8888aa;
+            border-top: 1px solid #f0f0f5;
+            padding-top: 1.8rem;
+        }
+
+        .modal-content .modal-meta .badge {
+            background: #f0f0f8;
+            padding: 6px 22px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #5a5a7a;
+            letter-spacing: 0.04em;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d2d4e;
+            transition: all 0.25s ease;
+            z-index: 10;
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: rotate(90deg) scale(1.05);
+            box-shadow: 0 6px 32px rgba(0, 0, 0, 0.14);
+        }
+
+        .modal-close:active {
+            transform: rotate(90deg) scale(0.90);
+        }
+
+        .modal-image .image-counter {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: rgba(0, 0, 0, 0.50);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.9rem;
+            padding: 6px 20px;
+            border-radius: 40px;
+            letter-spacing: 0.04em;
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        /* ---------- 响应式适配 ---------- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex: 0 0 56px;
+                /* 移动端略矮 */
+                padding: 0 3vw;
+            }
+            .navbar .placeholder {
+                font-size: 0.7rem;
+            }
+
+            .text-section {
+                flex: 0 0 22%;
+                padding: 0 4vw;
+            }
+            .text-section h1 {
+                font-size: clamp(1.6rem, 5vw, 2.4rem);
+            }
+            .text-section .subtitle {
+                font-size: clamp(0.75rem, 1.8vw, 0.95rem);
+                line-height: 1.6;
+            }
+            .text-section .divider {
+                width: 36px;
+                margin-top: 0.6rem;
+            }
+
+            .image-section {
+                padding: 0 2vw 1.5vh 2vw;
+            }
+            .grid-wrapper {
+                max-height: 68vh;
+                border-radius: 14px;
+            }
+            .grid-container {
+                gap: 10px;
+                padding: 14px;
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+            .grid-item {
+                border-radius: 10px;
+            }
+            .grid-item .item-label {
+                display: none;
+            }
+
+            .pagination {
+                bottom: 12px;
+                right: 14px;
+                padding: 4px 12px 4px 16px;
+                gap: 4px;
+            }
+            .pagination .page-info {
+                font-size: 0.75rem;
+                min-width: 40px;
+            }
+            .pagination button {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+            .pagination button svg {
+                width: 15px;
+                height: 15px;
+            }
+
+            .modal-overlay {
+                padding: 24px;
+            }
+            .modal-card {
+                flex-direction: column;
+                max-height: 94vh;
+                max-width: 98%;
+                width: 98%;
+                border-radius: 24px;
+            }
+            .modal-image {
+                flex: 0 0 44%;
+                min-height: 200px;
+            }
+            .modal-content {
+                padding: 2rem 1.8rem 2.2rem 1.8rem;
+            }
+            .modal-content .modal-title {
+                font-size: clamp(1.4rem, 4.5vw, 2rem);
+            }
+            .modal-content .modal-desc {
+                font-size: clamp(0.9rem, 2vw, 1.05rem);
+                max-width: 100%;
+            }
+            .modal-content .modal-meta {
+                margin-top: 1.2rem;
+                padding-top: 1.2rem;
+                flex-wrap: wrap;
+                font-size: 0.9rem;
+            }
+            .modal-close {
+                top: 14px;
+                right: 14px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .modal-image .image-counter {
+                bottom: 14px;
+                left: 14px;
+                font-size: 0.75rem;
+                padding: 4px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                flex: 0 0 48px;
+                padding: 0 2.5vw;
+            }
+            .navbar .placeholder {
+                font-size: 0.6rem;
+            }
+
+            .text-section {
+                flex: 0 0 20%;
+                padding: 0 3vw;
+            }
+            .text-section h1 {
+                font-size: clamp(1.2rem, 5vw, 1.6rem);
+            }
+            .text-section .subtitle {
+                font-size: clamp(0.65rem, 1.6vw, 0.8rem);
+                line-height: 1.5;
+            }
+            .text-section .divider {
+                width: 28px;
+                height: 2px;
+                margin-top: 0.4rem;
+            }
+
+            .image-section {
+                padding: 0 1.5vw 1vh 1.5vw;
+            }
+            .grid-container {
+                gap: 6px;
+                padding: 8px;
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+            .grid-item {
+                border-radius: 8px;
+            }
+
+            .pagination {
+                bottom: 8px;
+                right: 10px;
+                padding: 3px 8px 3px 12px;
+                gap: 2px;
+            }
+            .pagination .page-info {
+                font-size: 0.65rem;
+                min-width: 34px;
+            }
+            .pagination button {
+                width: 24px;
+                height: 24px;
+            }
+            .pagination button svg {
+                width: 13px;
+                height: 13px;
+            }
+
+            .modal-overlay {
+                padding: 16px;
+            }
+            .modal-card {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 18px;
+            }
+            .modal-image {
+                flex: 0 0 38%;
+                min-height: 140px;
+            }
+            .modal-content {
+                padding: 1.4rem 1.2rem 1.6rem 1.2rem;
+            }
+            .modal-content .modal-title {
+                font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+            }
+            .modal-content .modal-desc {
+                font-size: clamp(0.75rem, 2vw, 0.85rem);
+                line-height: 1.7;
+            }
+            .modal-close {
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .navbar {
+                flex: 0 0 72px;
+                padding: 0 6vw;
+            }
+
+            .text-section {
+                flex: 0 0 20%;
+                padding: 0 8vw;
+            }
+            .image-section {
+                padding: 0 6vw 2vh 6vw;
+            }
+            .grid-wrapper {
+                max-width: 1400px;
+                max-height: 70vh;
+            }
+            .grid-container {
+                gap: 18px;
+                padding: 24px;
+            }
+            .modal-overlay {
+                padding: 60px;
+            }
+            .modal-card {
+                width: 88%;
+                max-width: 1680px;
+            }
+        }
+
+        /* ---------- 工具类 ---------- */
+        .hidden {
+            display: none !important;
+        }
+        .grid-item img {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .modal-content {
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #d0d0e0 #f8f8fc;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: #f8f8fc;
+            border-radius: 4px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #d0d0e0;
+            border-radius: 4px;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <!-- ===== 导航栏 (空白，顶部) ===== -->
+        <header class="navbar">
+            <!-- 暂时留空，仅占位。可后续添加菜单、Logo 等 -->
+            <span class="placeholder"></span>
+        </header>
+
+        <!-- ===== 文字区域 ===== -->
+        <section class="text-section">
+            <h1>✦ 白族彩绘 ✦</h1>
+            <p class="subtitle">
+                白族民居彩绘，云南省大理市传统美术。国家级非物质文化遗产之一。<br />
+                是指用色彩、涂料、油漆等原料在建筑物墙体上平面描绘传统图像的艺术。<br />
+                同时借助土、石、木、布、纸、陶等材料对建筑物及其内部陈设进行装饰。<br />
+                广泛应用于白族民居建筑，尤其用于神祠、庙宇和大型古建筑群体的装饰。<br />
+            </p>
+            <div class="divider"></div>
+        </section>
+
+        <!-- ===== 图片区域 (网格 + 分页) ===== -->
+        <section class="image-section">
+            <div class="grid-wrapper">
+                <div class="grid-container" id="gridContainer"></div>
+
+                <!-- 分页控件 (右下角) -->
+                <div class="pagination" id="pagination">
+                    <button id="prevPageBtn" aria-label="上一页">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <span class="page-info" id="pageInfo">1 / 1</span>
+                    <button id="nextPageBtn" aria-label="下一页">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== 模态框 (放大版) ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card" id="modalCard">
+            <div class="modal-image" id="modalImageContainer">
+                <img id="modalImage" src="" alt="大图预览" />
+                <span class="image-counter" id="modalCounter">1 / 12</span>
+            </div>
+            <div class="modal-content" id="modalContent">
+                <h2 class="modal-title" id="modalTitle">标题</h2>
+                <p class="modal-desc" id="modalDesc">描述文字</p>
+                <div class="modal-meta">
+                    <span>📷 光影集</span>
+                    <span class="badge" id="modalBadge">自然</span>
+                </div>
+            </div>
+            <button class="modal-close" id="modalClose" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            //  数据 (扩充至12张，展示2页)
+            // ============================================================
+            const gallery = [{
+                image: 'https://picsum.photos/seed/mountain2024/1200/800',
+                title: '山间晨曦',
+                description: '清晨的第一缕阳光穿透薄雾，洒落在苍翠的山脊上。云海翻涌，天地间一片静谧，仿佛时间在这一刻停驻。',
+                badge: '山川'
+            }, {
+                image: 'https://picsum.photos/seed/lake2024/1200/800',
+                title: '湖光山色',
+                description: '碧波荡漾的湖水倒映着巍峨的雪山，水天一色，分不清哪里是天空，哪里是湖面。微风拂过，涟漪轻泛。',
+                badge: '湖泊'
+            }, {
+                image: 'https://picsum.photos/seed/forest2024/1200/800',
+                title: '林间秘境',
+                description: '阳光透过层层叠叠的树冠，洒下斑驳陆离的光影。林间小径铺满落叶，通向未知的深处，静谧而神秘。',
+                badge: '森林'
+            }, {
+                image: 'https://picsum.photos/seed/ocean2024/1200/800',
+                title: '星辰大海',
+                description: '夜幕低垂，繁星如钻石般镶嵌在深邃的天幕上。海浪轻拍礁石，奏响永恒的乐章，宇宙的浩瀚在此刻触手可及。',
+                badge: '海洋'
+            }, {
+                image: 'https://picsum.photos/seed/garden2024/1200/800',
+                title: '花海漫步',
+                description: '漫山遍野的鲜花竞相绽放，五彩斑斓，如打翻的调色盘。微风送来阵阵芬芳，蝴蝶在花丛中翩翩起舞。',
+                badge: '花海'
+            }, {
+                image: 'https://picsum.photos/seed/city2024/1200/800',
+                title: '城市黄昏',
+                description: '夕阳将整座城市染成温暖的琥珀色，高楼大厦的玻璃幕墙反射着金色光芒。华灯初上，繁华与宁静在此刻完美交融。',
+                badge: '城市'
+            }, {
+                image: 'https://picsum.photos/seed/desert2024/1200/800',
+                title: '大漠孤烟',
+                description: '无垠的沙丘在夕阳下泛着金红色的光，驼铃声声，仿佛穿越千年的丝路回响。天地辽阔，苍凉而壮美。',
+                badge: '沙漠'
+            }, {
+                image: 'https://picsum.photos/seed/aurora2024/1200/800',
+                title: '极光之舞',
+                description: '绚丽的极光在夜空中翻涌流淌，如同神灵的画笔在天幕上挥洒出绿色与紫色的光带，神秘而震撼。',
+                badge: '极光'
+            }, {
+                image: 'https://picsum.photos/seed/waterfall2024/1200/800',
+                title: '飞瀑流泉',
+                description: '水流从悬崖之巅倾泻而下，如银河落九天。水雾弥漫，在阳光折射下幻化出彩虹，轰鸣声回荡山谷。',
+                badge: '瀑布'
+            }, {
+                image: 'https://picsum.photos/seed/village2024/1200/800',
+                title: '古村晨雾',
+                description: '白墙黛瓦的古村落被晨雾笼罩，炊烟袅袅升起。青石板路湿漉漉的，时光在这里仿佛放慢了脚步。',
+                badge: '人文'
+            }, {
+                image: 'https://picsum.photos/seed/snow2024/1200/800',
+                title: '雪域仙境',
+                description: '皑皑白雪覆盖了山川与森林，世界变得纯粹而宁静。阳光洒在雪地上，闪烁着钻石般的光芒。',
+                badge: '雪景'
+            }, {
+                image: 'https://picsum.photos/seed/sunset2024/1200/800',
+                title: '落日熔金',
+                description: '夕阳将天空染成绚烂的橙红色，云层如同燃烧的火焰。大地沐浴在最后的暖光中，壮丽而温柔。',
+                badge: '日落'
+            }];
+
+            // ============================================================
+            //  配置
+            // ============================================================
+            const ITEMS_PER_PAGE = 6;
+            const totalItems = gallery.length;
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+            // ============================================================
+            //  状态
+            // ============================================================
+            let currentPage = 0; // 0-based
+            let currentGlobalIndex = 0; // 用于模态框
+
+            // ============================================================
+            //  DOM 引用
+            // ============================================================
+            const gridContainer = document.getElementById('gridContainer');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevPageBtn = document.getElementById('prevPageBtn');
+            const nextPageBtn = document.getElementById('nextPageBtn');
+
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalBadge = document.getElementById('modalBadge');
+            const modalCounter = document.getElementById('modalCounter');
+            const modalClose = document.getElementById('modalClose');
+
+            // ============================================================
+            //  渲染网格
+            // ============================================================
+            function renderGrid(page) {
+                const start = page * ITEMS_PER_PAGE;
+                const end = Math.min(start + ITEMS_PER_PAGE, totalItems);
+                const pageItems = gallery.slice(start, end);
+
+                gridContainer.innerHTML = '';
+                pageItems.forEach((item, index) => {
+                    const globalIdx = start + index;
+                    const div = document.createElement('div');
+                    div.className = 'grid-item';
+                    div.setAttribute('data-global-index', globalIdx);
+
+                    const img = document.createElement('img');
+                    img.src = item.image;
+                    img.alt = item.title;
+                    img.loading = 'lazy';
+
+                    const label = document.createElement('span');
+                    label.className = 'item-label';
+                    label.textContent = item.badge || '作品';
+
+                    div.appendChild(img);
+                    div.appendChild(label);
+
+                    // 点击打开模态框
+                    div.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.globalIndex, 10);
+                        if (!isNaN(idx)) {
+                            openModal(idx);
+                        }
+                    });
+
+                    gridContainer.appendChild(div);
+                });
+
+                // 更新分页信息
+                updatePagination(page);
+            }
+
+            // ============================================================
+            //  更新分页控件
+            // ============================================================
+            function updatePagination(page) {
+                pageInfo.textContent = `${page + 1} / ${totalPages}`;
+                prevPageBtn.disabled = (page === 0);
+                nextPageBtn.disabled = (page === totalPages - 1);
+            }
+
+            // ============================================================
+            //  分页事件
+            // ============================================================
+            function goToPage(page) {
+                if (page < 0) page = 0;
+                if (page >= totalPages) page = totalPages - 1;
+                if (page === currentPage) return;
+                currentPage = page;
+                renderGrid(currentPage);
+            }
+
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 0) goToPage(currentPage - 1);
+            });
+
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+            });
+
+            // ============================================================
+            //  模态框逻辑 (放大版)
+            // ============================================================
+            function updateModalContent(globalIndex) {
+                const data = gallery[globalIndex];
+                modalImage.src = data.image;
+                modalImage.alt = data.title;
+                modalTitle.textContent = data.title;
+                modalDesc.textContent = data.description;
+                modalBadge.textContent = data.badge || '自然';
+                modalCounter.textContent = `${globalIndex + 1} / ${totalItems}`;
+                currentGlobalIndex = globalIndex;
+            }
+
+            function openModal(globalIndex) {
+                if (globalIndex < 0 || globalIndex >= totalItems) return;
+                updateModalContent(globalIndex);
+                modalOverlay.classList.add('open');
+                document.body.classList.add('no-scroll');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('open');
+                document.body.classList.remove('no-scroll');
+            }
+
+            // 点击图片打开模态框 (已在网格渲染中绑定)
+            // 关闭事件
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // 键盘事件
+            document.addEventListener('keydown', function(e) {
+                // 模态框打开时
+                if (modalOverlay.classList.contains('open')) {
+                    if (e.key === 'Escape') {
+                        closeModal();
+                        e.preventDefault();
+                        return;
+                    }
+                    // 左右切换 (在模态框中查看上一张/下一张)
+                    if (e.key === 'ArrowLeft') {
+                        const prev = (currentGlobalIndex - 1 + totalItems) % totalItems;
+                        updateModalContent(prev);
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowRight') {
+                        const next = (currentGlobalIndex + 1) % totalItems;
+                        updateModalContent(next);
+                        e.preventDefault();
+                    }
+                    return;
+                }
+
+                // 网格分页键盘控制 (左右翻页)
+                if (e.key === 'ArrowLeft') {
+                    if (currentPage > 0) goToPage(currentPage - 1);
+                    e.preventDefault();
+                } else if (e.key === 'ArrowRight') {
+                    if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+                    e.preventDefault();
+                }
+            });
+
+            // ============================================================
+            //  触摸滑动 (网格区域)
+            // ============================================================
+            let touchStartX = 0;
+            let touchEndX = 0;
+            gridContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            gridContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0) {
+                        if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+                    } else {
+                        if (currentPage > 0) goToPage(currentPage - 1);
+                    }
+                }
+            }, { passive: true });
+
+            // ============================================================
+            //  图片加载错误兜底
+            // ============================================================
+            document.addEventListener('error', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.target.style.background = '#e8e8f0';
+                    e.target.alt = '图片加载失败';
+                }
+            }, true);
+
+            // ============================================================
+            //  初始化
+            // ============================================================
+            renderGrid(0);
+
+            // 预加载所有图片
+            gallery.forEach(item => {
+                const img = new Image();
+                img.src = item.image;
+            });
+
+            console.log(`✨ 画廊加载完成 · 共 ${totalItems} 张作品，每页 ${ITEMS_PER_PAGE} 张，共 ${totalPages} 页`);
+            console.log('📸 点击图片查看大图 (已放大至1.5倍)，键盘左右键翻页/切换');
+
+            // 暴露调试
+            window.__gallery = { gallery, goToPage, openModal, closeModal, currentPage };
+        })();
+    </script>
+
+</body>
+</html>
