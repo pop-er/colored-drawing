@@ -60,7 +60,7 @@
             opacity: 0.4;
         }
 
-        /* ---------- 文字区域 (中间偏上) ---------- */
+        /* ---------- 文字区域 ---------- */
         .text-section {
             flex: 0 0 24%;
             display: flex;
@@ -118,6 +118,7 @@
             background: #ffffff;
             padding: 0 4vw 2vh 4vw;
             min-height: 0;
+            /* 防止 flex 溢出 */
         }
 
         .grid-wrapper {
@@ -128,28 +129,33 @@
             max-height: 72vh;
             display: flex;
             flex-direction: column;
+            /* 改为 flex 列布局 */
             border-radius: 18px;
             overflow: hidden;
             background: #f8f8fc;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
             transition: box-shadow 0.3s ease;
+            min-height: 0;
+            /* 关键：允许收缩 */
         }
 
         .grid-wrapper:hover {
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
         }
 
-        /* 网格容器 */
+        /* 网格容器 ———— 占据剩余空间 */
         .grid-container {
+            flex: 1;
+            /* 填满除分页外的空间 */
+            min-height: 0;
+            /* 关键：防止溢出父容器 */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
             gap: 14px;
             width: 100%;
-            height: 100%;
             padding: 20px;
             background: #ffffff;
-            flex: 1;
         }
 
         .grid-item {
@@ -202,11 +208,13 @@
             opacity: 1;
         }
 
-        /* ---------- 分页控件 (右下角) ---------- */
+        /* ---------- 分页控件 (改为 flex 布局，位于网格下方) ---------- */
         .pagination {
-            position: absolute;
-            bottom: 20px;
-            right: 24px;
+            flex: 0 0 auto;
+            /* 不伸缩，保持自身大小 */
+            align-self: flex-end;
+            /* 右对齐 */
+            margin: 8px 16px 16px 0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -219,6 +227,10 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
             z-index: 20;
             user-select: none;
+            /* 移除 position: absolute / bottom / right */
+            position: relative;
+            bottom: auto;
+            right: auto;
         }
 
         .pagination .page-info {
@@ -431,10 +443,10 @@
             font-weight: 500;
         }
 
-        /* ---------- 响应式适配 (重点修复手机端显示不全) ---------- */
+        /* ---------- 响应式适配 (重点修复手机端) ---------- */
         @media (max-width: 768px) {
             .navbar {
-                flex: 0 0 56px;
+                flex: 0 0 50px;
                 padding: 0 3vw;
             }
             .navbar .placeholder {
@@ -442,43 +454,45 @@
             }
 
             .text-section {
-                flex: 0 0 20%;
-                /* 进一步减小文字区域高度 */
+                flex: 0 0 18%;
+                /* 压缩文字区域 */
                 padding: 0 4vw;
             }
             .text-section h1 {
-                font-size: clamp(1.4rem, 4.5vw, 2rem);
+                font-size: clamp(1.3rem, 4vw, 1.8rem);
             }
             .text-section .subtitle {
-                font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+                font-size: clamp(0.65rem, 1.5vw, 0.85rem);
                 line-height: 1.5;
             }
             .text-section .divider {
                 width: 30px;
-                margin-top: 0.5rem;
+                margin-top: 0.4rem;
             }
 
             .image-section {
                 padding: 0 2vw 1vh 2vw;
                 flex: 1;
-                /* 确保占满剩余空间 */
+                min-height: 0;
             }
 
             .grid-wrapper {
                 max-height: none;
-                /* 移除高度限制，让父容器决定 */
+                /* 移除高度限制，由父容器决定 */
                 height: 100%;
                 border-radius: 14px;
                 box-shadow: none;
-                /* 简化视觉 */
+                min-height: 0;
             }
 
             .grid-container {
-                gap: 8px;
-                padding: 12px;
+                gap: 6px;
+                padding: 10px;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
                 /* 3行2列，共6个 */
+                flex: 1;
+                min-height: 0;
             }
 
             .grid-item {
@@ -491,12 +505,11 @@
 
             /* 分页控件调整，确保在底部可见 */
             .pagination {
-                bottom: 12px;
-                right: 14px;
+                margin: 4px 10px 10px 0;
                 padding: 4px 12px 4px 16px;
                 gap: 4px;
+                flex: 0 0 auto;
                 background: rgba(255, 255, 255, 0.92);
-                /* 提高不透明度 */
             }
             .pagination .page-info {
                 font-size: 0.75rem;
@@ -560,7 +573,7 @@
 
         @media (max-width: 480px) {
             .navbar {
-                flex: 0 0 48px;
+                flex: 0 0 44px;
                 padding: 0 2.5vw;
             }
             .navbar .placeholder {
@@ -568,14 +581,15 @@
             }
 
             .text-section {
-                flex: 0 0 18%;
+                flex: 0 0 16%;
+                /* 进一步压缩 */
                 padding: 0 3vw;
             }
             .text-section h1 {
-                font-size: clamp(1rem, 4.5vw, 1.4rem);
+                font-size: clamp(1rem, 4vw, 1.3rem);
             }
             .text-section .subtitle {
-                font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+                font-size: clamp(0.55rem, 1.4vw, 0.7rem);
                 line-height: 1.4;
             }
             .text-section .divider {
@@ -589,8 +603,8 @@
             }
 
             .grid-container {
-                gap: 5px;
-                padding: 8px;
+                gap: 4px;
+                padding: 6px;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
             }
@@ -599,26 +613,26 @@
             }
 
             .pagination {
-                bottom: 8px;
-                right: 10px;
-                padding: 3px 8px 3px 12px;
+                margin: 2px 6px 6px 0;
+                padding: 2px 8px 2px 12px;
                 gap: 2px;
             }
             .pagination .page-info {
-                font-size: 0.65rem;
-                min-width: 34px;
+                font-size: 0.6rem;
+                min-width: 30px;
             }
             .pagination button {
-                width: 24px;
-                height: 24px;
+                width: 22px;
+                height: 22px;
+                font-size: 12px;
             }
             .pagination button svg {
-                width: 13px;
-                height: 13px;
+                width: 12px;
+                height: 12px;
             }
 
             .modal-overlay {
-                padding: 16px;
+                padding: 12px;
             }
             .modal-card {
                 width: 100%;
@@ -627,24 +641,24 @@
             }
             .modal-image {
                 flex: 0 0 38%;
-                min-height: 140px;
+                min-height: 120px;
             }
             .modal-content {
-                padding: 1.4rem 1.2rem 1.6rem 1.2rem;
+                padding: 1.2rem 1rem 1.4rem 1rem;
             }
             .modal-content .modal-title {
-                font-size: clamp(1rem, 4vw, 1.3rem);
+                font-size: clamp(0.95rem, 4vw, 1.2rem);
             }
             .modal-content .modal-desc {
-                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
-                line-height: 1.6;
+                font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+                line-height: 1.5;
             }
             .modal-close {
-                top: 10px;
-                right: 10px;
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
+                top: 8px;
+                right: 8px;
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
             }
         }
 
@@ -718,7 +732,7 @@
 
         <!-- ===== 文字区域 ===== -->
         <section class="text-section">
-            <h1>✦ 白族彩绘 ✦t1</h1>
+            <h1>✦ 白族彩绘 ✦</h1>
             <p class="subtitle">
                 白族民居彩绘，云南省大理市传统美术。国家级非物质文化遗产之一。<br />
                 是指用色彩、涂料、油漆等原料在建筑物墙体上平面描绘传统图像的艺术。<br />
@@ -733,7 +747,7 @@
             <div class="grid-wrapper">
                 <div class="grid-container" id="gridContainer"></div>
 
-                <!-- 分页控件 -->
+                <!-- 分页控件 (右下角) -->
                 <div class="pagination" id="pagination">
                     <button id="prevPageBtn" aria-label="上一页">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
