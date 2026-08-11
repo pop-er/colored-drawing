@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>探索世界之美 · 画廊</title>
     <style>
         /* ---------- 全局重置 & 基础 ---------- */
@@ -27,19 +27,22 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ---------- 主容器 ---------- */
+        /* ---------- 主容器：使用 dvh 适应移动端真实视口 ---------- */
         .app {
             display: flex;
             flex-direction: column;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
+            /* 动态视口高度，解决移动端地址栏问题 */
             overflow: hidden;
             background: #ffffff;
         }
 
-        /* ---------- 导航栏 (空白，顶部) ---------- */
+        /* ---------- 导航栏 ---------- */
         .navbar {
-            flex: 0 0 64px;
+            flex: 0 0 56px;
+            /* 稍小一点 */
             width: 100%;
             background: #ffffff;
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
@@ -49,6 +52,7 @@
             position: relative;
             z-index: 10;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            min-height: 44px;
         }
 
         .navbar .placeholder {
@@ -62,24 +66,27 @@
 
         /* ---------- 文字区域 ---------- */
         .text-section {
-            flex: 0 0 24%;
+            flex: 0 0 20%;
+            /* 压缩为20% */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 0 6vw;
+            padding: 0 4vw;
             text-align: center;
             background: #ffffff;
             position: relative;
             z-index: 1;
+            min-height: 0;
+            /* 允许收缩 */
         }
 
         .text-section h1 {
-            font-size: clamp(2rem, 5vw, 3.8rem);
+            font-size: clamp(1.6rem, 4vw, 3rem);
             font-weight: 700;
             letter-spacing: 0.04em;
             color: #1a1a2e;
-            margin-bottom: 0.3em;
+            margin-bottom: 0.2em;
             background: linear-gradient(135deg, #1a1a2e 0%, #3d3d6b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -87,11 +94,11 @@
         }
 
         .text-section .subtitle {
-            font-size: clamp(0.9rem, 1.3vw, 1.2rem);
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
             font-weight: 400;
             color: #555577;
-            max-width: 680px;
-            line-height: 1.8;
+            max-width: 600px;
+            line-height: 1.6;
             letter-spacing: 0.02em;
         }
 
@@ -101,14 +108,14 @@
         }
 
         .text-section .divider {
-            width: 50px;
+            width: 40px;
             height: 3px;
             background: linear-gradient(90deg, #c4c4e0, #8888b8);
             border-radius: 2px;
-            margin-top: 1rem;
+            margin-top: 0.6rem;
         }
 
-        /* ---------- 图片区域 (网格) ---------- */
+        /* ---------- 图片区域 ---------- */
         .image-section {
             flex: 1;
             display: flex;
@@ -116,9 +123,9 @@
             justify-content: center;
             position: relative;
             background: #ffffff;
-            padding: 0 4vw 2vh 4vw;
+            padding: 0 2vw 1vh 2vw;
             min-height: 0;
-            /* 防止 flex 溢出 */
+            /* 关键：允许收缩 */
         }
 
         .grid-wrapper {
@@ -129,32 +136,30 @@
             max-height: 72vh;
             display: flex;
             flex-direction: column;
-            /* 改为 flex 列布局 */
             border-radius: 18px;
             overflow: hidden;
             background: #f8f8fc;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
             transition: box-shadow 0.3s ease;
             min-height: 0;
-            /* 关键：允许收缩 */
+            /* 允许收缩 */
+            flex: 1;
         }
 
         .grid-wrapper:hover {
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
         }
 
-        /* 网格容器 ———— 占据剩余空间 */
+        /* 网格容器：占据剩余空间 */
         .grid-container {
             flex: 1;
-            /* 填满除分页外的空间 */
             min-height: 0;
-            /* 关键：防止溢出父容器 */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 14px;
+            gap: 12px;
             width: 100%;
-            padding: 20px;
+            padding: 16px;
             background: #ffffff;
         }
 
@@ -188,14 +193,14 @@
 
         .grid-item .item-label {
             position: absolute;
-            bottom: 12px;
-            left: 12px;
+            bottom: 10px;
+            left: 10px;
             background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             color: #fff;
-            font-size: 0.7rem;
-            padding: 4px 14px;
+            font-size: 0.65rem;
+            padding: 3px 12px;
             border-radius: 30px;
             letter-spacing: 0.03em;
             font-weight: 400;
@@ -208,49 +213,44 @@
             opacity: 1;
         }
 
-        /* ---------- 分页控件 (改为 flex 布局，位于网格下方) ---------- */
+        /* ---------- 分页控件：位于网格下方 ---------- */
         .pagination {
             flex: 0 0 auto;
-            /* 不伸缩，保持自身大小 */
             align-self: flex-end;
-            /* 右对齐 */
-            margin: 8px 16px 16px 0;
+            margin: 6px 14px 14px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.88);
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 6px 16px 6px 20px;
+            padding: 5px 14px 5px 18px;
             border-radius: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.6);
             z-index: 20;
             user-select: none;
-            /* 移除 position: absolute / bottom / right */
             position: relative;
-            bottom: auto;
-            right: auto;
         }
 
         .pagination .page-info {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #2d2d4e;
             letter-spacing: 0.02em;
-            margin-right: 4px;
-            min-width: 52px;
+            margin-right: 2px;
+            min-width: 48px;
             text-align: center;
         }
 
         .pagination button {
-            width: 34px;
-            height: 34px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: none;
             background: transparent;
             color: #3d3d5e;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -276,8 +276,8 @@
         }
 
         .pagination button svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             stroke-width: 2.4;
         }
 
@@ -298,7 +298,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s ease;
-            padding: 40px;
+            padding: 30px;
         }
 
         .modal-overlay.open {
@@ -309,7 +309,7 @@
         .modal-card {
             width: 92%;
             max-width: 1680px;
-            max-height: 96vh;
+            max-height: 94vh;
             background: #ffffff;
             border-radius: 32px;
             box-shadow: 0 48px 120px rgba(0, 0, 0, 0.35), 0 16px 48px rgba(0, 0, 0, 0.15);
@@ -328,7 +328,7 @@
 
         .modal-image {
             flex: 0 0 55%;
-            min-height: 400px;
+            min-height: 320px;
             background: #e8e8f0;
             overflow: hidden;
             position: relative;
@@ -348,7 +348,7 @@
 
         .modal-content {
             flex: 1;
-            padding: 4rem 4rem 4rem 3.2rem;
+            padding: 3rem 3rem 3rem 2.8rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -357,55 +357,55 @@
         }
 
         .modal-content .modal-title {
-            font-size: clamp(2rem, 4.2vw, 3.6rem);
+            font-size: clamp(1.8rem, 3.6vw, 3.2rem);
             font-weight: 700;
             color: #1a1a2e;
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.5rem;
             letter-spacing: 0.02em;
             line-height: 1.3;
         }
 
         .modal-content .modal-desc {
-            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            font-size: clamp(1rem, 1.4vw, 1.3rem);
             color: #4a4a6a;
-            line-height: 2;
+            line-height: 1.9;
             letter-spacing: 0.01em;
             max-width: 95%;
         }
 
         .modal-content .modal-meta {
-            margin-top: 2.4rem;
+            margin-top: 2rem;
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 1rem;
+            gap: 14px;
+            font-size: 0.95rem;
             color: #8888aa;
             border-top: 1px solid #f0f0f5;
-            padding-top: 1.8rem;
+            padding-top: 1.5rem;
         }
 
         .modal-content .modal-meta .badge {
             background: #f0f0f8;
-            padding: 6px 22px;
+            padding: 5px 20px;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #5a5a7a;
             letter-spacing: 0.04em;
         }
 
         .modal-close {
             position: absolute;
-            top: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             border: none;
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            font-size: 28px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            font-size: 24px;
             line-height: 1;
             cursor: pointer;
             display: flex;
@@ -420,7 +420,7 @@
         .modal-close:hover {
             background: rgba(255, 255, 255, 1);
             transform: rotate(90deg) scale(1.05);
-            box-shadow: 0 6px 32px rgba(0, 0, 0, 0.14);
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.14);
         }
 
         .modal-close:active {
@@ -429,60 +429,64 @@
 
         .modal-image .image-counter {
             position: absolute;
-            bottom: 24px;
-            left: 24px;
+            bottom: 20px;
+            left: 20px;
             background: rgba(0, 0, 0, 0.50);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             color: #fff;
-            font-size: 0.9rem;
-            padding: 6px 20px;
+            font-size: 0.85rem;
+            padding: 5px 18px;
             border-radius: 40px;
             letter-spacing: 0.04em;
             pointer-events: none;
             font-weight: 500;
         }
 
-        /* ---------- 响应式适配 (重点修复手机端) ---------- */
+        /* ---------- 响应式适配 (重点手机端) ---------- */
         @media (max-width: 768px) {
             .navbar {
-                flex: 0 0 50px;
+                flex: 0 0 44px;
                 padding: 0 3vw;
+                min-height: 40px;
             }
             .navbar .placeholder {
-                font-size: 0.7rem;
+                font-size: 0.6rem;
             }
 
             .text-section {
-                flex: 0 0 18%;
-                /* 压缩文字区域 */
-                padding: 0 4vw;
+                flex: 0 0 15%;
+                /* 压缩到15% */
+                padding: 0 3vw;
             }
             .text-section h1 {
-                font-size: clamp(1.3rem, 4vw, 1.8rem);
+                font-size: clamp(1.2rem, 3.8vw, 1.6rem);
+                margin-bottom: 0.1em;
             }
             .text-section .subtitle {
-                font-size: clamp(0.65rem, 1.5vw, 0.85rem);
-                line-height: 1.5;
+                font-size: clamp(0.6rem, 1.4vw, 0.8rem);
+                line-height: 1.4;
+                max-width: 90%;
             }
             .text-section .divider {
-                width: 30px;
-                margin-top: 0.4rem;
+                width: 28px;
+                height: 2px;
+                margin-top: 0.3rem;
             }
 
             .image-section {
-                padding: 0 2vw 1vh 2vw;
+                padding: 0 1.5vw 0.5vh 1.5vw;
                 flex: 1;
                 min-height: 0;
             }
 
             .grid-wrapper {
                 max-height: none;
-                /* 移除高度限制，由父容器决定 */
                 height: 100%;
                 border-radius: 14px;
                 box-shadow: none;
                 min-height: 0;
+                flex: 1;
             }
 
             .grid-container {
@@ -490,7 +494,6 @@
                 padding: 10px;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
-                /* 3行2列，共6个 */
                 flex: 1;
                 min-height: 0;
             }
@@ -500,106 +503,103 @@
             }
             .grid-item .item-label {
                 display: none;
-                /* 小屏隐藏标签，节省空间 */
             }
 
-            /* 分页控件调整，确保在底部可见 */
             .pagination {
                 margin: 4px 10px 10px 0;
                 padding: 4px 12px 4px 16px;
                 gap: 4px;
                 flex: 0 0 auto;
-                background: rgba(255, 255, 255, 0.92);
             }
             .pagination .page-info {
-                font-size: 0.75rem;
-                min-width: 40px;
+                font-size: 0.7rem;
+                min-width: 36px;
             }
             .pagination button {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
+                width: 26px;
+                height: 26px;
+                font-size: 13px;
             }
             .pagination button svg {
-                width: 15px;
-                height: 15px;
+                width: 14px;
+                height: 14px;
             }
 
-            /* 模态框适配 */
             .modal-overlay {
-                padding: 24px;
+                padding: 20px;
             }
             .modal-card {
                 flex-direction: column;
                 max-height: 94vh;
                 max-width: 98%;
                 width: 98%;
-                border-radius: 24px;
+                border-radius: 22px;
             }
             .modal-image {
-                flex: 0 0 44%;
-                min-height: 200px;
+                flex: 0 0 42%;
+                min-height: 180px;
             }
             .modal-content {
-                padding: 2rem 1.8rem 2.2rem 1.8rem;
+                padding: 1.8rem 1.6rem 2rem 1.6rem;
             }
             .modal-content .modal-title {
-                font-size: clamp(1.4rem, 4.5vw, 2rem);
+                font-size: clamp(1.3rem, 4vw, 1.8rem);
             }
             .modal-content .modal-desc {
-                font-size: clamp(0.9rem, 2vw, 1.05rem);
+                font-size: clamp(0.85rem, 1.8vw, 1rem);
                 max-width: 100%;
             }
             .modal-content .modal-meta {
-                margin-top: 1.2rem;
-                padding-top: 1.2rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
                 flex-wrap: wrap;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             .modal-close {
-                top: 14px;
-                right: 14px;
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
+                top: 12px;
+                right: 12px;
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
             }
             .modal-image .image-counter {
-                bottom: 14px;
-                left: 14px;
-                font-size: 0.75rem;
-                padding: 4px 16px;
+                bottom: 12px;
+                left: 12px;
+                font-size: 0.7rem;
+                padding: 4px 14px;
             }
         }
 
         @media (max-width: 480px) {
             .navbar {
-                flex: 0 0 44px;
-                padding: 0 2.5vw;
+                flex: 0 0 38px;
+                padding: 0 2vw;
+                min-height: 36px;
             }
             .navbar .placeholder {
-                font-size: 0.6rem;
+                font-size: 0.5rem;
             }
 
             .text-section {
-                flex: 0 0 12%;
-                /* 进一步压缩 */
-                padding: 0 3vw;
+                flex: 0 0 13%;
+                padding: 0 2vw;
             }
             .text-section h1 {
-                font-size: clamp(1rem, 4vw, 1.3rem);
+                font-size: clamp(0.9rem, 3.5vw, 1.2rem);
             }
             .text-section .subtitle {
-                font-size: clamp(0.55rem, 1.4vw, 0.7rem);
-                line-height: 1.4;
+                font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+                line-height: 1.3;
+                max-width: 100%;
             }
             .text-section .divider {
-                width: 24px;
+                width: 20px;
                 height: 2px;
-                margin-top: 0.3rem;
+                margin-top: 0.2rem;
             }
 
             .image-section {
-                padding: 0 1.5vw 0.5vh 1.5vw;
+                padding: 0 1vw 0.3vh 1vw;
             }
 
             .grid-container {
@@ -616,6 +616,7 @@
                 margin: 2px 6px 6px 0;
                 padding: 2px 8px 2px 12px;
                 gap: 2px;
+                border-radius: 30px;
             }
             .pagination .page-info {
                 font-size: 0.6rem;
@@ -624,7 +625,7 @@
             .pagination button {
                 width: 22px;
                 height: 22px;
-                font-size: 12px;
+                font-size: 11px;
             }
             .pagination button svg {
                 width: 12px;
@@ -637,20 +638,20 @@
             .modal-card {
                 width: 100%;
                 max-width: 100%;
-                border-radius: 18px;
+                border-radius: 16px;
             }
             .modal-image {
-                flex: 0 0 38%;
+                flex: 0 0 36%;
                 min-height: 120px;
             }
             .modal-content {
-                padding: 1.2rem 1rem 1.4rem 1rem;
+                padding: 1rem 1rem 1.2rem 1rem;
             }
             .modal-content .modal-title {
-                font-size: clamp(0.95rem, 4vw, 1.2rem);
+                font-size: clamp(0.9rem, 3.8vw, 1.1rem);
             }
             .modal-content .modal-desc {
-                font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+                font-size: clamp(0.6rem, 1.6vw, 0.7rem);
                 line-height: 1.5;
             }
             .modal-close {
@@ -683,7 +684,7 @@
                 padding: 24px;
             }
             .modal-overlay {
-                padding: 60px;
+                padding: 50px;
             }
             .modal-card {
                 width: 88%;
@@ -732,12 +733,11 @@
 
         <!-- ===== 文字区域 ===== -->
         <section class="text-section">
-            <h1>✦ 白族彩绘 ✦</h1>
+            <h1>✦ 探索世界之美</h1>
             <p class="subtitle">
-                白族民居彩绘，云南省大理市传统美术。国家级非物质文化遗产之一。<br />
-                是指用色彩、涂料、油漆等原料在建筑物墙体上平面描绘传统图像的艺术。<br />
-                同时借助土、石、木、布、纸、陶等材料对建筑物及其内部陈设进行装饰。<br />
-                广泛应用于白族民居建筑，尤其用于神祠、庙宇和大型古建筑群体的装饰。<br />
+                每一帧画面都是自然的诗篇，<br />
+                用镜头记录光影流转的瞬间，<br />
+                <em>让心灵在风景中自由呼吸。</em>
             </p>
             <div class="divider"></div>
         </section>
