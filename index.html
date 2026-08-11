@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>探索世界之美 · 白族彩绘</title>
+    <title>探索世界之美 · 画廊</title>
     <style>
         /* ---------- 全局重置 & 基础 ---------- */
         *,
@@ -40,22 +40,17 @@
         /* ---------- 导航栏 (空白，顶部) ---------- */
         .navbar {
             flex: 0 0 64px;
-            /* 固定高度 */
             width: 100%;
             background: #ffffff;
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            /* 极淡分割线，几乎不可见，但能提示导航区域 */
             display: flex;
             align-items: center;
             padding: 0 4vw;
             position: relative;
             z-index: 10;
-            /* 保证在文字区域之上 */
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
-            /* 极淡阴影，增加层次 */
         }
 
-        /* 导航栏内暂时留空，仅占位 */
         .navbar .placeholder {
             font-size: 0.85rem;
             color: #cccccc;
@@ -63,13 +58,11 @@
             font-weight: 400;
             user-select: none;
             opacity: 0.4;
-            /* 极淡的占位文字，几乎看不见，仅示意 */
         }
 
-        /* ---------- 文字区域 (中间偏上) ———— 增加左右留白 ---------- */
+        /* ---------- 文字区域 (中间偏上) ---------- */
         .text-section {
             flex: 0 0 24%;
-            /* 因为上面多了导航栏，比例略微调小 */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -115,7 +108,7 @@
             margin-top: 1rem;
         }
 
-        /* ---------- 图片区域 (网格) ———— 增加左右留白 ---------- */
+        /* ---------- 图片区域 (网格) ---------- */
         .image-section {
             flex: 1;
             display: flex;
@@ -146,7 +139,7 @@
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
         }
 
-        /* 网格容器 ———— 增加内边距，让图片与边框距离更大 */
+        /* 网格容器 */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -276,7 +269,7 @@
             stroke-width: 2.4;
         }
 
-        /* ---------- 模态框 (overlay) 增加四周留白 ---------- */
+        /* ---------- 模态框 ---------- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -301,7 +294,6 @@
             visibility: visible;
         }
 
-        /* 白块 */
         .modal-card {
             width: 92%;
             max-width: 1680px;
@@ -439,11 +431,10 @@
             font-weight: 500;
         }
 
-        /* ---------- 响应式适配 ---------- */
+        /* ---------- 响应式适配 (重点修复手机端显示不全) ---------- */
         @media (max-width: 768px) {
             .navbar {
                 flex: 0 0 56px;
-                /* 移动端略矮 */
                 padding: 0 3vw;
             }
             .navbar .placeholder {
@@ -451,46 +442,61 @@
             }
 
             .text-section {
-                flex: 0 0 22%;
+                flex: 0 0 20%;
+                /* 进一步减小文字区域高度 */
                 padding: 0 4vw;
             }
             .text-section h1 {
-                font-size: clamp(1.6rem, 5vw, 2.4rem);
+                font-size: clamp(1.4rem, 4.5vw, 2rem);
             }
             .text-section .subtitle {
-                font-size: clamp(0.75rem, 1.8vw, 0.95rem);
-                line-height: 1.6;
+                font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+                line-height: 1.5;
             }
             .text-section .divider {
-                width: 36px;
-                margin-top: 0.6rem;
+                width: 30px;
+                margin-top: 0.5rem;
             }
 
             .image-section {
-                padding: 0 2vw 1.5vh 2vw;
+                padding: 0 2vw 1vh 2vw;
+                flex: 1;
+                /* 确保占满剩余空间 */
             }
+
             .grid-wrapper {
-                max-height: 68vh;
+                max-height: none;
+                /* 移除高度限制，让父容器决定 */
+                height: 100%;
                 border-radius: 14px;
+                box-shadow: none;
+                /* 简化视觉 */
             }
+
             .grid-container {
-                gap: 10px;
-                padding: 14px;
+                gap: 8px;
+                padding: 12px;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
+                /* 3行2列，共6个 */
             }
+
             .grid-item {
                 border-radius: 10px;
             }
             .grid-item .item-label {
                 display: none;
+                /* 小屏隐藏标签，节省空间 */
             }
 
+            /* 分页控件调整，确保在底部可见 */
             .pagination {
                 bottom: 12px;
                 right: 14px;
                 padding: 4px 12px 4px 16px;
                 gap: 4px;
+                background: rgba(255, 255, 255, 0.92);
+                /* 提高不透明度 */
             }
             .pagination .page-info {
                 font-size: 0.75rem;
@@ -506,6 +512,7 @@
                 height: 15px;
             }
 
+            /* 模态框适配 */
             .modal-overlay {
                 padding: 24px;
             }
@@ -561,27 +568,28 @@
             }
 
             .text-section {
-                flex: 0 0 20%;
+                flex: 0 0 18%;
                 padding: 0 3vw;
             }
             .text-section h1 {
-                font-size: clamp(1.2rem, 5vw, 1.6rem);
+                font-size: clamp(1rem, 4.5vw, 1.4rem);
             }
             .text-section .subtitle {
-                font-size: clamp(0.65rem, 1.6vw, 0.8rem);
-                line-height: 1.5;
+                font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+                line-height: 1.4;
             }
             .text-section .divider {
-                width: 28px;
+                width: 24px;
                 height: 2px;
-                margin-top: 0.4rem;
+                margin-top: 0.3rem;
             }
 
             .image-section {
-                padding: 0 1.5vw 1vh 1.5vw;
+                padding: 0 1.5vw 0.5vh 1.5vw;
             }
+
             .grid-container {
-                gap: 6px;
+                gap: 5px;
                 padding: 8px;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
@@ -625,11 +633,11 @@
                 padding: 1.4rem 1.2rem 1.6rem 1.2rem;
             }
             .modal-content .modal-title {
-                font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+                font-size: clamp(1rem, 4vw, 1.3rem);
             }
             .modal-content .modal-desc {
-                font-size: clamp(0.75rem, 2vw, 0.85rem);
-                line-height: 1.7;
+                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+                line-height: 1.6;
             }
             .modal-close {
                 top: 10px;
@@ -645,7 +653,6 @@
                 flex: 0 0 72px;
                 padding: 0 6vw;
             }
-
             .text-section {
                 flex: 0 0 20%;
                 padding: 0 8vw;
@@ -704,9 +711,8 @@
 <body>
 
     <div class="app">
-        <!-- ===== 导航栏 (空白，顶部) ===== -->
+        <!-- ===== 导航栏 ===== -->
         <header class="navbar">
-            <!-- 暂时留空，仅占位。可后续添加菜单、Logo 等 -->
             <span class="placeholder"></span>
         </header>
 
@@ -722,12 +728,12 @@
             <div class="divider"></div>
         </section>
 
-        <!-- ===== 图片区域 (网格 + 分页) ===== -->
+        <!-- ===== 图片区域 ===== -->
         <section class="image-section">
             <div class="grid-wrapper">
                 <div class="grid-container" id="gridContainer"></div>
 
-                <!-- 分页控件 (右下角) -->
+                <!-- 分页控件 -->
                 <div class="pagination" id="pagination">
                     <button id="prevPageBtn" aria-label="上一页">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -745,7 +751,7 @@
         </section>
     </div>
 
-    <!-- ===== 模态框 (放大版) ===== -->
+    <!-- ===== 模态框 ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card" id="modalCard">
             <div class="modal-image" id="modalImageContainer">
@@ -773,9 +779,6 @@
         (function() {
             'use strict';
 
-            // ============================================================
-            //  数据 (扩充至12张，展示2页)
-            // ============================================================
             const gallery = [{
                 image: 'https://picsum.photos/seed/mountain2024/1200/800',
                 title: '山间晨曦',
@@ -838,22 +841,13 @@
                 badge: '日落'
             }];
 
-            // ============================================================
-            //  配置
-            // ============================================================
             const ITEMS_PER_PAGE = 6;
             const totalItems = gallery.length;
             const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-            // ============================================================
-            //  状态
-            // ============================================================
-            let currentPage = 0; // 0-based
-            let currentGlobalIndex = 0; // 用于模态框
+            let currentPage = 0;
+            let currentGlobalIndex = 0;
 
-            // ============================================================
-            //  DOM 引用
-            // ============================================================
             const gridContainer = document.getElementById('gridContainer');
             const pageInfo = document.getElementById('pageInfo');
             const prevPageBtn = document.getElementById('prevPageBtn');
@@ -867,9 +861,6 @@
             const modalCounter = document.getElementById('modalCounter');
             const modalClose = document.getElementById('modalClose');
 
-            // ============================================================
-            //  渲染网格
-            // ============================================================
             function renderGrid(page) {
                 const start = page * ITEMS_PER_PAGE;
                 const end = Math.min(start + ITEMS_PER_PAGE, totalItems);
@@ -894,7 +885,6 @@
                     div.appendChild(img);
                     div.appendChild(label);
 
-                    // 点击打开模态框
                     div.addEventListener('click', function(e) {
                         e.stopPropagation();
                         const idx = parseInt(this.dataset.globalIndex, 10);
@@ -906,22 +896,15 @@
                     gridContainer.appendChild(div);
                 });
 
-                // 更新分页信息
                 updatePagination(page);
             }
 
-            // ============================================================
-            //  更新分页控件
-            // ============================================================
             function updatePagination(page) {
                 pageInfo.textContent = `${page + 1} / ${totalPages}`;
                 prevPageBtn.disabled = (page === 0);
                 nextPageBtn.disabled = (page === totalPages - 1);
             }
 
-            // ============================================================
-            //  分页事件
-            // ============================================================
             function goToPage(page) {
                 if (page < 0) page = 0;
                 if (page >= totalPages) page = totalPages - 1;
@@ -938,9 +921,6 @@
                 if (currentPage < totalPages - 1) goToPage(currentPage + 1);
             });
 
-            // ============================================================
-            //  模态框逻辑 (放大版)
-            // ============================================================
             function updateModalContent(globalIndex) {
                 const data = gallery[globalIndex];
                 modalImage.src = data.image;
@@ -964,8 +944,6 @@
                 document.body.classList.remove('no-scroll');
             }
 
-            // 点击图片打开模态框 (已在网格渲染中绑定)
-            // 关闭事件
             modalClose.addEventListener('click', closeModal);
             modalOverlay.addEventListener('click', function(e) {
                 if (e.target === modalOverlay) {
@@ -973,16 +951,13 @@
                 }
             });
 
-            // 键盘事件
             document.addEventListener('keydown', function(e) {
-                // 模态框打开时
                 if (modalOverlay.classList.contains('open')) {
                     if (e.key === 'Escape') {
                         closeModal();
                         e.preventDefault();
                         return;
                     }
-                    // 左右切换 (在模态框中查看上一张/下一张)
                     if (e.key === 'ArrowLeft') {
                         const prev = (currentGlobalIndex - 1 + totalItems) % totalItems;
                         updateModalContent(prev);
@@ -995,7 +970,6 @@
                     return;
                 }
 
-                // 网格分页键盘控制 (左右翻页)
                 if (e.key === 'ArrowLeft') {
                     if (currentPage > 0) goToPage(currentPage - 1);
                     e.preventDefault();
@@ -1005,9 +979,6 @@
                 }
             });
 
-            // ============================================================
-            //  触摸滑动 (网格区域)
-            // ============================================================
             let touchStartX = 0;
             let touchEndX = 0;
             gridContainer.addEventListener('touchstart', function(e) {
@@ -1026,9 +997,6 @@
                 }
             }, { passive: true });
 
-            // ============================================================
-            //  图片加载错误兜底
-            // ============================================================
             document.addEventListener('error', function(e) {
                 if (e.target.tagName === 'IMG') {
                     e.target.style.background = '#e8e8f0';
@@ -1036,12 +1004,7 @@
                 }
             }, true);
 
-            // ============================================================
-            //  初始化
-            // ============================================================
             renderGrid(0);
-
-            // 预加载所有图片
             gallery.forEach(item => {
                 const img = new Image();
                 img.src = item.image;
@@ -1050,7 +1013,6 @@
             console.log(`✨ 画廊加载完成 · 共 ${totalItems} 张作品，每页 ${ITEMS_PER_PAGE} 张，共 ${totalPages} 页`);
             console.log('📸 点击图片查看大图 (已放大至1.5倍)，键盘左右键翻页/切换');
 
-            // 暴露调试
             window.__gallery = { gallery, goToPage, openModal, closeModal, currentPage };
         })();
     </script>
